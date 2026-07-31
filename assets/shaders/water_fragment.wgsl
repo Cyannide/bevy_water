@@ -14,6 +14,7 @@
   forward_io::{VertexOutput, FragmentOutput},
   pbr_functions,
   pbr_functions::{apply_pbr_lighting, main_pass_post_lighting_processing},
+  pbr_types::STANDARD_MATERIAL_FLAGS_FOG_ENABLED_BIT,
   pbr_types::STANDARD_MATERIAL_FLAGS_UNLIT_BIT,
 }
 #endif
@@ -108,6 +109,13 @@ fn fragment(
 
   // apply in-shader post processing (fog, alpha-premultiply, and also tonemapping, debanding if the camera is non-hdr)
   // note this does not include fullscreen postprocessing effects like bloom.
+  //
+  // The fog bit is forced rather than trusted: `fog_enabled` defaults to true
+  // on the base StandardMaterial, yet the flag was observably absent at the
+  // gate here — terrain forcing the same bit fogged while this shader did
+  // not. Until the flag's journey through the extended-material uniform is
+  // understood, assert the intent.
+  pbr_input.material.flags |= STANDARD_MATERIAL_FLAGS_FOG_ENABLED_BIT;
   out.color = main_pass_post_lighting_processing(pbr_input, out.color);
 
   // show grid
