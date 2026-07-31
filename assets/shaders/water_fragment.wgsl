@@ -77,7 +77,16 @@ fn fragment(
   let edge_color = water_bindings::material.edge_color;
 
   let z_depth_buffer_ndc = bevy_pbr::prepass_utils::prepass_depth(in.position, 0u);
-  let z_depth_buffer_view = depth_ndc_to_view_z(z_depth_buffer_ndc);
+  var z_depth_buffer_view = depth_ndc_to_view_z(z_depth_buffer_ndc);
+  // Cleared depth (reversed-Z: 0.0) means NOTHING opaque behind this water —
+  // past the terrain's streaming radius, or open sky under the horizon. The
+  // raw math then yields depth_diff <= 0, the shore smoothstep reads that as
+  // "touching ground", and the whole far ocean gets painted edge_color
+  // (default white) — a bright plateau no fog can fully bury. No ground at
+  // all is the *deepest* water, not the shallowest: force the far case.
+  if (z_depth_buffer_ndc <= 0.0) {
+    z_depth_buffer_view = -1.0e9;
+  }
   let z_fragment_view = depth_ndc_to_view_z(in.position.z);
   let depth_diff_view = z_fragment_view - z_depth_buffer_view;
   let beers_law = exp(-depth_diff_view * water_clarity);
