@@ -119,6 +119,15 @@ fn fragment(
   // apply in-shader post processing (fog, alpha-premultiply, and also tonemapping, debanding if the camera is non-hdr)
   // note this does not include fullscreen postprocessing effects like bloom.
   //
+  // Dissolve the water before its own grid edge: alpha fades to zero over the
+  // last stretch, so the silhouette of the finite tile grid can never be seen
+  // against the sky — a vanished pixel IS the background, exactly, with no
+  // dependence on fog, tonemapping or blend-order being colour-identical
+  // (three separate near-misses taught us not to depend on that). Numbers
+  // assume a grid whose nearest edge is >= ~896 units from the camera.
+  let camera_distance = length(in.world_position.xyz - bevy_pbr::mesh_view_bindings::view.world_position.xyz);
+  out.color.a *= 1.0 - smoothstep(700.0, 860.0, camera_distance);
+
   // The fog bit is forced rather than trusted: `fog_enabled` defaults to true
   // on the base StandardMaterial, yet the flag was observably absent at the
   // gate here — terrain forcing the same bit fogged while this shader did
