@@ -350,6 +350,7 @@ pub fn setup_water(
               ..default()
             },
             extension: WaterMaterial {
+              fade: 1.0,
               amplitude: settings.amplitude,
               clarity: settings.clarity,
               deep_color: settings.deep_color,
