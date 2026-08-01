@@ -30,11 +30,16 @@ pub struct WaterMaterial {
   pub coord_offset: Vec2,
   pub coord_scale: Vec2,
   /// Wave direction A (fading out during transition).
+  pub fade: f32,
   pub wave_dir_a: Vec2,
   /// Wave direction B (fading in during transition).
   pub wave_dir_b: Vec2,
   /// Blend factor between directions: 0 = fully A, 1 = fully B.
   pub wave_blend: f32,
+  /// Global opacity multiplier, 1.0 = normal. Lives in the *extension* uniform
+  /// because base-StandardMaterial changes observably do not reach this shader
+  /// (same path that eats fog_enabled); the extension demonstrably does.
+  pub fade: f32,
   pub quality: u32,
 }
 
@@ -52,6 +57,7 @@ impl Default for WaterMaterial {
       coord_scale: Vec2::new(1.0, 1.0),
       wave_dir_a: default_dir,
       wave_dir_b: default_dir,
+      fade: 1.0,
       wave_blend: 1.0,
       quality: 4,
     }
@@ -100,6 +106,7 @@ impl AsBindGroupShaderType<WaterMaterialUniform> for WaterMaterial {
       wave_dir_a: self.wave_dir_a,
       wave_dir_b: self.wave_dir_b,
       wave_blend: self.wave_blend,
+      fade: self.fade,
     }
   }
 }

@@ -10,6 +10,7 @@ struct WaterMaterial {
   clarity: f32,
   edge_scale: f32,
   wave_blend: f32,
+  fade: f32,
   wave_dir_a: vec2<f32>,
   wave_dir_b: vec2<f32>,
 };
