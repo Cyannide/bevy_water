@@ -128,8 +128,9 @@ fn fragment(
   let camera_distance = length(in.world_position.xyz - bevy_pbr::mesh_view_bindings::view.world_position.xyz);
   out.color.a *= 1.0 - smoothstep(700.0, 860.0, camera_distance);
 
-  // Global reveal/fade knob, 1.0 in normal play.
-  out.color.a *= material.fade;
+  // Global reveal/fade knob, 1.0 in normal play. Qualified: `material` only
+  // exists in this file through the bindings module.
+  out.color.a *= water_bindings::material.fade;
 
   // The fog bit is forced rather than trusted: `fog_enabled` defaults to true
   // on the base StandardMaterial, yet the flag was observably absent at the
