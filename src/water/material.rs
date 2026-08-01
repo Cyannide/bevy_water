@@ -30,7 +30,6 @@ pub struct WaterMaterial {
   pub coord_offset: Vec2,
   pub coord_scale: Vec2,
   /// Wave direction A (fading out during transition).
-  pub fade: f32,
   pub wave_dir_a: Vec2,
   /// Wave direction B (fading in during transition).
   pub wave_dir_b: Vec2,
@@ -90,6 +89,7 @@ pub struct WaterMaterialUniform {
   pub wave_blend: f32,
   pub wave_dir_a: Vec2,
   pub wave_dir_b: Vec2,
+  pub fade: f32,
 }
 
 impl AsBindGroupShaderType<WaterMaterialUniform> for WaterMaterial {
