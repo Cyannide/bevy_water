@@ -9,7 +9,7 @@ use bevy::camera_controller::free_camera::{FreeCamera, FreeCameraPlugin};
 use bevy::color::palettes::css::*;
 use bevy::mesh::*;
 use bevy::pbr::wireframe::{Wireframe, WireframePlugin};
-use bevy::render::view::Hdr;
+use bevy::camera::Hdr;
 use bevy::{
   anti_alias::fxaa::Fxaa,
   app::AppExit,
@@ -20,7 +20,8 @@ use bevy::{
     light_consts::lux, AtmosphereEnvironmentMapLight, CascadeShadowConfigBuilder, FogVolume,
     VolumetricFog, VolumetricLight,
   },
-  pbr::{Atmosphere, AtmosphereMode, AtmosphereSettings, ScatteringMedium, ScreenSpaceReflections},
+  light::{atmosphere::ScatteringMedium, Atmosphere},
+  pbr::{AtmosphereMode, AtmosphereSettings, ScreenSpaceReflections},
   post_process::bloom::Bloom,
   prelude::*,
   render::render_resource::TextureFormat,
@@ -283,7 +284,7 @@ pub fn setup_ocean(
   commands.spawn((
     Sun,
     DirectionalLight {
-      shadows_enabled: true,
+      shadow_maps_enabled: true,
       // lux::RAW_SUNLIGHT is recommended for use with this feature, since
       // other values approximate sunlight *post-scattering* in various
       // conditions. RAW_SUNLIGHT in comparison is the illuminance of the
@@ -443,7 +444,7 @@ pub fn make_camera<'a>(
     Hdr,
     Transform::from_xyz(-1.2, 5.15, 0.0).looking_at(Vec3::Y * 5.0, Vec3::Y),
     // Earthlike atmosphere
-    Atmosphere::earthlike(scattering_mediums.add(ScatteringMedium::default())),
+    Atmosphere::earth(scattering_mediums.add(ScatteringMedium::earth(256, 256))),
     // Can be adjusted to change the scene scale and rendering quality
     AtmosphereSettings::default(),
     // The directional light illuminance used in this scene
@@ -492,7 +493,7 @@ pub fn setup_camera(
 pub fn setup_ships(mut commands: Commands, asset_server: Res<AssetServer>) {
   // Spawn ships.
   let scene =
-    SceneRoot(asset_server.load("models/dutch_ship_medium_1k/dutch_ship_medium_1k.gltf#Scene0"));
+    WorldAssetRoot(asset_server.load("models/dutch_ship_medium_1k/dutch_ship_medium_1k.gltf#Scene0"));
   let ship = Ship::new(-0.400, -8.0, 9.0, -2.0, 2.0);
 
   // "Randomly" place the ships.
