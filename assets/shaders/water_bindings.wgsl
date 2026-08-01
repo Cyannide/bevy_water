@@ -10,9 +10,12 @@ struct WaterMaterial {
   clarity: f32,
   edge_scale: f32,
   wave_blend: f32,
-  fade: f32,
   wave_dir_a: vec2<f32>,
   wave_dir_b: vec2<f32>,
+  // LAST, matching WaterMaterialUniform: uniform layouts are positional, and
+  // inserting this mid-struct once shifted every following field — the shader
+  // read a wave direction as the fade and the entire ocean vanished.
+  fade: f32,
 };
 
 @group(#{MATERIAL_BIND_GROUP}) @binding(100)
