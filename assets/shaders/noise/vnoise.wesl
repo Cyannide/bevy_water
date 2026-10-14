@@ -1,8 +1,9 @@
-#define_import_path bevy_water::noise::vnoise
+// Imported as `bevy_water::noise::vnoise` (registered at
+// embedded://bevy_water/noise/vnoise.wesl).
 
-#import bevy_water::noise::random::{
+import bevy_water::noise::random::{
 	random2di, cubic_hermite_curve_2d,
-}
+};
 
 fn vnoise2d(v: vec2<f32>) -> f32 {
 	let i = floor(v);

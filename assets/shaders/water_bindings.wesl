@@ -1,4 +1,5 @@
-#define_import_path bevy_water::water_bindings
+// Imported as `bevy_water::water_bindings` (registered at
+// embedded://bevy_water/water_bindings.wesl).
 
 struct WaterMaterial {
   deep_color: vec4<f32>,
@@ -18,5 +19,5 @@ struct WaterMaterial {
   fade: f32,
 };
 
-@group(#{MATERIAL_BIND_GROUP}) @binding(100)
+@group(constants::MATERIAL_BIND_GROUP) @binding(100)
 var<uniform> material: WaterMaterial;

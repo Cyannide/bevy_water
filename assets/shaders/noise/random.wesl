@@ -1,4 +1,5 @@
-#define_import_path bevy_water::noise::random
+// Imported as `bevy_water::noise::random` (registered at
+// embedded://bevy_water/noise/random.wesl).
 
 fn random(v: f32) -> f32 {
 	return fract(sin(dot(vec2<f32>(v), vec2<f32>(12.9898,78.233))) * 43758.5453123);

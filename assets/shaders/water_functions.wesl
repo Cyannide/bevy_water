@@ -1,14 +1,19 @@
-#define_import_path bevy_water::water_functions
+// Imported as `bevy_water::water_functions` (registered at
+// embedded://bevy_water/water_functions.wesl).
+//
+// The `QUALITY__GE_<n>` flags are `QUALITY >= n`, set beside `QUALITY` by
+// `WaterMaterial::specialize`: WESL's `@if` takes flags, never a comparison.
 
-#ifdef PREPASS_PIPELINE
-#import bevy_render::globals::Globals
+import bevy_water::water_bindings::material;
+import bevy_water::noise::fbm::{fbm, fbm_half};
+
+@if(PREPASS_PIPELINE)
+import bevy_render::globals::Globals;
+@else
+import bevy_pbr::render::mesh_view_bindings::globals;
+
+@if(PREPASS_PIPELINE)
 @group(0) @binding(1) var<uniform> globals: Globals;
-#else
-#import bevy_pbr::mesh_view_bindings::globals
-#endif
-
-#import bevy_water::water_bindings::material
-#import bevy_water::noise;
 
 fn wave(p: vec2<f32>) -> f32 {
   // Internal time creates fluid oscillation within the pattern
@@ -20,11 +25,10 @@ fn wave(p: vec2<f32>) -> f32 {
   let wave_len_y = 5.0;
   let wave_y = cos(p.y / wave_len_y + time_y);
   let wave_x = smoothstep(1.0, 0.0, abs(sin(p.x / wave_len_x + wave_y + time_x)));
-#if QUALITY < 3
-  let n = noise::fbm::fbm_half(p) / 2.0 - 1.0;
-#else
-  let n = noise::fbm::fbm(p) / 2.0 - 1.0;
-#endif
+@if(QUALITY__GE_3)
+  let n = fbm(p) / 2.0 - 1.0;
+@else
+  let n = fbm_half(p) / 2.0 - 1.0;
   return wave_x + n;
 }
 
@@ -39,15 +43,12 @@ fn sample_directional_wave(p: vec2<f32>, time: f32, dir: vec2<f32>) -> f32 {
 
   // Multiple layers with counter-directional scrolling for volume
   var result = wave((rotated_p - time) * 0.3) * 0.3;
-#if QUALITY >= 2
+@if(QUALITY__GE_2)
   result = result + wave((rotated_p + time) * 0.4) * 0.3;
-#endif
-#if QUALITY >= 3
+@if(QUALITY__GE_3)
   result = result + wave((rotated_p + time) * 0.5) * 0.2;
-#endif
-#if QUALITY >= 4
+@if(QUALITY__GE_4)
   result = result + wave((rotated_p - time) * 0.6) * 0.2;
-#endif
 
   return result;
 }
@@ -59,7 +60,7 @@ fn get_wave_height(p: vec2<f32>) -> f32 {
 
   // Sample wave B.
   var wave_b = sample_directional_wave(p, time, material.wave_dir_b);
-#if QUALITY > 2
+@if(QUALITY__GE_3) {
   if material.wave_blend < FADE_IN {
     // Blend the waves.
     // Sample wave A
@@ -71,7 +72,7 @@ fn get_wave_height(p: vec2<f32>) -> f32 {
     // Blend wave patterns - NOT rotating, just fading between independent patterns
     wave_b = mix(wave_a, wave_b, blend);
   }
-#endif
+}
 
   return material.amplitude * wave_b;
 }
