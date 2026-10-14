@@ -37,7 +37,7 @@ fn setup_simple_ocean(
 
   // Spawn simple terrain plane.
   commands.spawn((
-    Name::new(format!("Terrain")),
+    Name::new("Terrain"),
     Mesh3d(meshes.add(PlaneMeshBuilder::from_length(256.0 * 6.0))),
     material.clone(),
     Transform::from_xyz(0.0, -5.0, 0.0),
@@ -45,7 +45,7 @@ fn setup_simple_ocean(
   ));
   // Spawn fake island.
   commands.spawn((
-    Name::new(format!("Fake island")),
+    Name::new("Fake island"),
     Mesh3d(meshes.add(Sphere::new(2.0))),
     material.clone(),
     Transform::from_xyz(-30.0, -10.0, -30.0).with_scale(Vec3::new(30.0, 6.5, 30.0)),

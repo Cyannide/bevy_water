@@ -23,22 +23,25 @@ pub(crate) fn mix2d(x: Vec2, y: Vec2, a: f32) -> Vec2 {
   }
 }
 
+// The constant is the shader's own (`noise/random.wesl`), kept digit for digit
+// so the two read alike; f32 rounds both to the same value.
+#[allow(clippy::excessive_precision)]
 pub(crate) fn random2d(v: Vec2) -> f32 {
   // Note: the large values here seem to cause some precision differences between the shader
   // and this Rust code.
-  return fract(v.dot(Vec2::new(12.9898, 78.233)).sin() * 43758.5453123);
+  fract(v.dot(Vec2::new(12.9898, 78.233)).sin() * 43758.5453123)
 }
 
 // Sometimes needed for noise functions that sample multiple corners.
 pub(crate) fn random2di(v: Vec2) -> f32 {
-  return random2d(v.floor());
+  random2d(v.floor())
 }
 
 pub(crate) fn cubic_hermite_curve_2d(p: Vec2) -> Vec2 {
-  return Vec2 {
+  Vec2 {
     x: smoothstep(0.0, 1.0, p.x),
     y: smoothstep(0.0, 1.0, p.y),
-  };
+  }
 }
 
 pub(crate) fn vnoise2d(v: Vec2) -> f32 {
@@ -55,30 +58,30 @@ pub(crate) fn vnoise2d(v: Vec2) -> f32 {
   let u = cubic_hermite_curve_2d(f);
 
   // Mix
-  return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+  mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y
 }
 
 pub(crate) fn noise2(v: Vec2) -> f32 {
-  return vnoise2d(v);
+  vnoise2d(v)
 }
 
 const M2: Mat2 = Mat2::from_cols(Vec2::new(0.8, 0.6), Vec2::new(-0.6, 0.8));
 pub(crate) fn fbm(mut p: Vec2) -> f32 {
   let mut f = 0.5000 * noise2(p);
   p = M2 * p * 2.02;
-  f = f + 0.2500 * noise2(p);
+  f += 0.2500 * noise2(p);
   p = M2 * p * 2.03;
-  f = f + 0.1250 * noise2(p);
+  f += 0.1250 * noise2(p);
   p = M2 * p * 2.01;
-  f = f + 0.0625 * noise2(p);
-  return f / 0.9375;
+  f += 0.0625 * noise2(p);
+  f / 0.9375
 }
 
 pub(crate) fn fbm_half(mut p: Vec2) -> f32 {
   let mut f = 0.5000 * noise2(p);
   p = M2 * p * 2.02;
-  f = f + 0.2500 * noise2(p);
-  return f / 0.9375;
+  f += 0.2500 * noise2(p);
+  f / 0.9375
 }
 
 pub(crate) fn smoothstep(edge0: f32, edge1: f32, x: f32) -> f32 {
@@ -101,7 +104,7 @@ pub(crate) fn wave(p: Vec2, g_time: f32, quality: u32) -> f32 {
   } else {
     fbm(p) / 2.0 - 1.0
   };
-  return wave_x + n;
+  wave_x + n
 }
 
 /// Sample wave pattern for a single direction.
@@ -121,13 +124,13 @@ pub(crate) fn sample_directional_wave(
   let time_vec = Vec2::splat(time);
   let mut d = wave((rotated_p - time_vec) * 0.3, g_time, quality) * 0.3;
   if quality >= 2 {
-    d = d + wave((rotated_p + time_vec) * 0.4, g_time, quality) * 0.3;
+    d += wave((rotated_p + time_vec) * 0.4, g_time, quality) * 0.3;
   }
   if quality >= 3 {
-    d = d + wave((rotated_p + time_vec) * 0.5, g_time, quality) * 0.2;
+    d += wave((rotated_p + time_vec) * 0.5, g_time, quality) * 0.2;
   }
   if quality >= 4 {
-    d = d + wave((rotated_p - time_vec) * 0.6, g_time, quality) * 0.2;
+    d += wave((rotated_p - time_vec) * 0.6, g_time, quality) * 0.2;
   }
   d
 }

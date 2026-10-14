@@ -65,19 +65,17 @@ fn setup(
     stacks: 36,
   }));
   // Water material.
-  let material = materials
-    .add(StandardWaterMaterial {
-      base: default(),
-      extension: WaterMaterial {
-        amplitude: settings.amplitude,
-        coord_scale: Vec2::new(256.0, 256.0),
-        ..default()
-      },
-    })
-    .into();
+  let material = materials.add(StandardWaterMaterial {
+    base: default(),
+    extension: WaterMaterial {
+      amplitude: settings.amplitude,
+      coord_scale: Vec2::new(256.0, 256.0),
+      ..default()
+    },
+  });
 
   commands.spawn((
-    Name::new(format!("Water world")),
+    Name::new("Water world"),
     Mesh3d(mesh),
     MeshMaterial3d(material),
     Transform::from_xyz(0.0, 0.0, 0.0),

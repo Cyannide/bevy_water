@@ -71,7 +71,7 @@ fn setup(
   });
 
   commands.spawn((
-    Name::new(format!("Water world")),
+    Name::new("Water world"),
     Mesh3d(mesh),
     MeshMaterial3d(material),
     Transform::from_xyz(0.0, 0.0, 0.0),

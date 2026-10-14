@@ -82,7 +82,7 @@ fn setup(
 
   // Spawn water entity.
   commands.spawn((
-    Name::new(format!("Water world")),
+    Name::new("Water world"),
     Mesh3d(mesh),
     MeshMaterial3d(material),
     Transform::from_xyz(0.0, 0.0, 0.0),
@@ -103,7 +103,7 @@ fn setup(
 
   // Spawn planet entity.
   commands.spawn((
-    Name::new(format!("Planet terrain")),
+    Name::new("Planet terrain"),
     Mesh3d(mesh),
     MeshMaterial3d(material),
     Transform::from_xyz(0.0, 0.0, 0.0),

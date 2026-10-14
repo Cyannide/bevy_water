@@ -381,7 +381,7 @@ pub fn setup_ocean(
     meshes.add(mesh)
   });
   commands.spawn((
-    Name::new(format!("Sea floor")),
+    Name::new("Sea floor"),
     floor_mesh.clone(),
     sandy.clone(),
     Transform::from_xyz(0.0, -5.0, 0.0),
@@ -400,7 +400,7 @@ pub fn setup_ocean(
     meshes.add(mesh)
   });
   commands.spawn((
-    Name::new(format!("Sandy island")),
+    Name::new("Sandy island"),
     island_mesh.clone(),
     sandy.clone(),
     Transform::from_xyz(-30.0, -10.0, -30.0).with_scale(Vec3::new(30.0, 6.5, 30.0)),
@@ -425,7 +425,7 @@ pub fn setup_orb(
     meshes.add(mesh)
   });
   commands.spawn((
-    Name::new(format!("Orb")),
+    Name::new("Orb"),
     orb_mesh.clone(),
     MeshMaterial3d(materials.add(Color::srgba(0.1, 0.2, 0.4, 1.0))),
     Transform::from_xyz(-30.0, 10.0, -30.0),

@@ -21,6 +21,9 @@ pub struct ImageReformat {
 }
 
 impl ImageReformat {
+  // Spawns the reformat job and hands back the image it works on, which is what
+  // every caller wants; renaming it would break them for a lint.
+  #[allow(clippy::new_ret_no_self)]
   pub fn new(
     commands: &mut Commands,
     asset_server: &AssetServer,

@@ -175,9 +175,9 @@ pub enum WaterQuality {
   Ultra,
 }
 
-impl Into<u32> for WaterQuality {
-  fn into(self) -> u32 {
-    match self {
+impl From<WaterQuality> for u32 {
+  fn from(quality: WaterQuality) -> u32 {
+    match quality {
       WaterQuality::Basic => 1,
       WaterQuality::Medium => 2,
       WaterQuality::High => 3,
@@ -314,8 +314,8 @@ pub fn setup_water(
   plane_builder = match settings.water_quality {
     WaterQuality::Basic => plane_builder,
     WaterQuality::Medium => plane_builder,
-    WaterQuality::High => plane_builder.subdivisions(WATER_SIZE as u32 / 16),
-    WaterQuality::Ultra => plane_builder.subdivisions(WATER_SIZE as u32 / 4),
+    WaterQuality::High => plane_builder.subdivisions(WATER_SIZE / 16),
+    WaterQuality::Ultra => plane_builder.subdivisions(WATER_SIZE / 4),
   };
 
   // Generate mesh for water.
